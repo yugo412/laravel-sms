@@ -18,7 +18,7 @@ Laravel SMS is a package that has abilities to send and receive SMS via SMS gate
 ## Requirements
  - PHP 7.0 or above.
  - cURL extension for PHP.
- - Laravel version 5.3 or above.
+ - Laravel version 5.5 or above.
 
 ## Available Vendors
 - [SMSGateway.me](http://smsgateway.me/) (```smsgatewayme```)
