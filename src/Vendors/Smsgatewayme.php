@@ -10,7 +10,6 @@ use Yugo\SMSGateway\Interfaces\SMS;
 
 class Smsgatewayme implements SMS
 {
-
     /**
      * API base URL.
      *
@@ -19,7 +18,7 @@ class Smsgatewayme implements SMS
     private $baseUrl = 'https://smsgateway.me/api/v4/';
 
     /**
-     * Device ID from SMSgateway.me
+     * Device ID from SMSgateway.me.
      *
      * @var string
      */
@@ -29,6 +28,7 @@ class Smsgatewayme implements SMS
      * Generated token from SMSgateway.me.
      *
      * @link http://smsgateway.me/dashboard/settings
+     *
      * @var string
      */
     private $token = null;
@@ -102,7 +102,7 @@ class Smsgatewayme implements SMS
         }
 
         $key = sprintf('smsgatewayme.device.%s', $id);
-        $device = Cache::remember($key, 10080, function () use ($id) {
+        $device = Cache::remember($key, 3600 * 24 * 7, function () use ($id) {
             $response = Request::get($this->baseUrl . 'device/' . $id);
 
             if ($response->code != 200) {
@@ -122,9 +122,10 @@ class Smsgatewayme implements SMS
      *
      * @param string $destination
      * @param string $text
+     *
      * @return object|null
      */
-    public function send(array $destinations = [], string $text): ?array
+    public function send(array $destinations, string $text): ?array
     {
         if (empty($destinations)) {
             return null;
@@ -182,24 +183,24 @@ class Smsgatewayme implements SMS
     /**
      * Get detailed information about message.
      *
-     * @param integer $id
+     * @param int $id
+     *
      * @return array|null
      */
     public function info(int $id): ?array
     {
-        if ($this->cache === true) {
-            $key = sprintf('smsgatewayme.info.%s', $id);
-            if (Cache::has($key)) {
-                return (array) Cache::get($key);
-            } else {
-                $response = Request::get($this->baseUrl . 'message/' . $id);
+        $key = sprintf('smsgatewayme.info.%s', $id);
 
-                if ($response->code == 200) {
-                    Cache::put($key, $response->body, 3600 * 24);
-                } else {
-                    if (!empty($response->body->message)) {
-                        Log::error($response->body->message);
-                    }
+        if ($this->cache === true and Cache::has($key)) {
+            return (array) Cache::get($key);
+        } else {
+            $response = Request::get($this->baseUrl . 'message/' . $id);
+
+            if ($response->code == 200) {
+                Cache::put($key, $response->body, 3600 * 24);
+            } else {
+                if (!empty($response->body->message)) {
+                    Log::error($response->body->message);
                 }
             }
         }
