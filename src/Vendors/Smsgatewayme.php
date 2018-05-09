@@ -36,7 +36,7 @@ class Smsgatewayme implements SMS
     /**
      * Store requested data into cache.
      *
-     * @var boolean
+     * @var bool
      */
     private $cache = false;
 
@@ -46,7 +46,7 @@ class Smsgatewayme implements SMS
         $this->token = config('message.smsgatewayme.token');
 
         Request::defaultHeaders([
-            'Accept' => 'application/json',
+            'Accept'        => 'application/json',
             'Authorization' => $this->token,
         ]);
     }
@@ -54,7 +54,8 @@ class Smsgatewayme implements SMS
     /**
      * Set device ID manually.
      *
-     * @param integer $id
+     * @param int $id
+     *
      * @return self
      */
     public function setDevice(int $id): self
@@ -68,6 +69,7 @@ class Smsgatewayme implements SMS
      * Set token manually.
      *
      * @param string $token
+     *
      * @return self
      */
     public function setToken(string $token): self
@@ -80,7 +82,8 @@ class Smsgatewayme implements SMS
     /**
      * Set cache as true and trigger cache data for every request.
      *
-     * @param boolean $cache
+     * @param bool $cache
+     *
      * @return self
      */
     public function setCache(bool $cache = true): self
@@ -103,7 +106,7 @@ class Smsgatewayme implements SMS
 
         $key = sprintf('smsgatewayme.device.%s', $id);
         $device = Cache::remember($key, 3600 * 24 * 7, function () use ($id) {
-            $response = Request::get($this->baseUrl . 'device/' . $id);
+            $response = Request::get($this->baseUrl.'device/'.$id);
 
             if ($response->code != 200) {
                 if (!empty($response->body->message)) {
@@ -135,13 +138,13 @@ class Smsgatewayme implements SMS
         foreach ($destinations as $destination) {
             $messages[] = [
                 'phone_number' => $destination,
-                'message' => $text,
-                'device_id' => $this->device,
+                'message'      => $text,
+                'device_id'    => $this->device,
             ];
         }
 
         $body = Body::json($messages);
-        $response = Request::post($this->baseUrl . 'message/send', [], $body);
+        $response = Request::post($this->baseUrl.'message/send', [], $body);
 
         if ($response->code != 200) {
             if (!empty($response->body->message)) {
@@ -169,7 +172,7 @@ class Smsgatewayme implements SMS
         }
 
         $body = Body::json($messages);
-        $response = Request::post($this->baseUrl . 'message/cancel', [], $body);
+        $response = Request::post($this->baseUrl.'message/cancel', [], $body);
 
         if ($response->code != 200) {
             if (!empty($response->body->message)) {
@@ -194,7 +197,7 @@ class Smsgatewayme implements SMS
         if ($this->cache === true and Cache::has($key)) {
             return (array) Cache::get($key);
         } else {
-            $response = Request::get($this->baseUrl . 'message/' . $id);
+            $response = Request::get($this->baseUrl.'message/'.$id);
 
             if ($response->code == 200) {
                 Cache::put($key, $response->body, 3600 * 24);
