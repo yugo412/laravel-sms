@@ -42,7 +42,7 @@ Select package from ```yugo/smsgateway``` to automatically copy a config file to
 
 [![vendor-publish.gif](https://s9.postimg.cc/6bmdismi7/vendor-publish.gif)](https://postimg.cc/image/ki24e0xd7/)
 
-**Note:** If you are using Laravel version 5.4 or below, you must setup provide manually by adding ```Yugo\SMSGateway\Provider\SmsServiceProvider::class``` to your ```config/app.php``` file.
+**Note:** If you are using Laravel version 5.4 or below, you must setup provide manually by adding ```Yugo\SMSGateway\Providers\SmsServiceProvider::class``` to your ```config/app.php``` file.
 
 ```php
 App\Providers\AppServiceProvider::class,
