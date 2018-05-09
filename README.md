@@ -18,7 +18,7 @@ Laravel SMS is a package that has abilities to send and receive SMS via SMS gate
 ## Requirements
  - PHP 7.0 or above.
  - cURL extension for PHP.
- - Laravel version 5.5 or above.
+ - Laravel version 5.4 or above.
 
 ## Available Vendors
 - [SMSGateway.me](http://smsgateway.me/) (```smsgatewayme```)
@@ -32,7 +32,7 @@ Install package via Composer by running the command:
 composer require yugo/smsgateway -vvv
 ```
 
-Publish package assets using command below:
+Publish package assets using the command below:
 
 ```
 php artisan vendor:publish
@@ -42,7 +42,7 @@ Select package from ```yugo/smsgateway``` to automatically copy a config file to
 
 [![vendor-publish.gif](https://s9.postimg.cc/6bmdismi7/vendor-publish.gif)](https://postimg.cc/image/ki24e0xd7/)
 
-**Note:** If you are using Laravel version 5.4 or below, you must setup provide manually by adding ```Yugo\SMSGateway\Providers\SmsServiceProvider::class``` to your ```config/app.php``` file.
+**Note:** If you are using Laravel version 5.4, you must setup provider manually by adding ```Yugo\SMSGateway\Providers\SmsServiceProvider::class``` to your ```config/app.php``` file.
 
 ```php
 App\Providers\AppServiceProvider::class,
