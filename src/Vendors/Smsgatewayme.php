@@ -75,7 +75,7 @@ class Smsgatewayme implements SMS
      * @param string $text
      * @return object|null
      */
-    public function send(array $destinations = [], string $text, ?int $userId = null): ?array
+    public function send(array $destinations = [], string $text): ?array
     {
         if (empty($destinations)) {
             return null;

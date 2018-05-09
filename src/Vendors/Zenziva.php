@@ -2,9 +2,9 @@
 
 namespace Yugo\SMSGateway\Vendors;
 
+use Illuminate\Support\Facades\Log;
 use Unirest\Request;
 use Yugo\SMSGateway\Interfaces\SMS;
-use Illuminate\Support\Facades\Log;
 
 class Zenziva implements SMS
 {
@@ -42,7 +42,7 @@ class Zenziva implements SMS
      * @param string $message
      * @return array|null
      */
-    public function send(array $destinations, string $message, ?int $userId = null): ?array
+    public function send(array $destinations, string $message): ?array
     {
         if (!empty($destinations)) {
             $destination = $destinations[0];
@@ -55,14 +55,14 @@ class Zenziva implements SMS
             'pesan' => $message,
         ]);
 
-        $response = Request::get($this->baseUrl.'/smsapi.php?'.$query);
+        $response = Request::get($this->baseUrl . '/smsapi.php?' . $query);
 
         $xml = simplexml_load_string($response->body);
         $body = json_decode(json_encode($xml), true);
 
-        if (! empty($body['message']) and $body['message']['status'] != 0) {
+        if (!empty($body['message']) and $body['message']['status'] != 0) {
             Log::error($body['message']['text']);
-        } 
+        }
 
         return $body ?? null;
     }
@@ -72,14 +72,14 @@ class Zenziva implements SMS
      *
      * @return array|null
      */
-    public function credit() : ?array
+    public function credit(): ?array
     {
         $query = http_build_query([
             'userkey' => $this->userkey,
             'passkey' => $this->passkey,
         ]);
 
-        $response = Request::get($this->baseUrl.'/smsapibalance.php?'.$query);
+        $response = Request::get($this->baseUrl . '/smsapibalance.php?' . $query);
 
         $xml = simplexml_load_string($response->body);
         $body = json_decode(json_encode($xml), true);

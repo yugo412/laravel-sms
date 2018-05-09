@@ -12,6 +12,6 @@ interface SMS
      * @param string $text
      * @return void
      */
-    public function send(array $destination = [], string $text, ?int $userId = null);
+    public function send(array $destination = [], string $text);
 
 }
