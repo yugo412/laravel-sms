@@ -10,7 +10,6 @@ use Yugo\SMSGateway\Interfaces\SMS;
 
 class Smsgatewayme implements SMS
 {
-
     /**
      * API base URL.
      *
@@ -19,7 +18,7 @@ class Smsgatewayme implements SMS
     private $baseUrl = 'https://smsgateway.me/api/v4/';
 
     /**
-     * Device ID from SMSgateway.me
+     * Device ID from SMSgateway.me.
      *
      * @var string
      */
@@ -29,6 +28,7 @@ class Smsgatewayme implements SMS
      * Generated token from SMSgateway.me.
      *
      * @link http://smsgateway.me/dashboard/settings
+     *
      * @var string
      */
     private $token = null;
@@ -39,7 +39,7 @@ class Smsgatewayme implements SMS
         $this->token = config('message.smsgatewayme.token');
 
         Request::defaultHeaders([
-            'Accept' => 'application/json',
+            'Accept'        => 'application/json',
             'Authorization' => $this->token,
         ]);
     }
@@ -55,10 +55,10 @@ class Smsgatewayme implements SMS
             $device = $this->device;
         }
 
-        $response = Request::get($this->baseUrl . 'device/' . $device);
+        $response = Request::get($this->baseUrl.'device/'.$device);
 
         if ($response->code == 200) {
-            Cache::forever('smsgatewayme.device.' . $device, $response->body);
+            Cache::forever('smsgatewayme.device.'.$device, $response->body);
         } else {
             if (!empty($response->body->message)) {
                 Log::error($response->body->message);
@@ -73,9 +73,10 @@ class Smsgatewayme implements SMS
      *
      * @param string $destination
      * @param string $text
+     *
      * @return object|null
      */
-    public function send(array $destinations = [], string $text): ?array
+    public function send(array $destinations, string $text): ?array
     {
         if (empty($destinations)) {
             return null;
@@ -85,13 +86,13 @@ class Smsgatewayme implements SMS
         foreach ($destinations as $destination) {
             $messages[] = [
                 'phone_number' => $destination,
-                'message' => $text,
-                'device_id' => $this->device,
+                'message'      => $text,
+                'device_id'    => $this->device,
             ];
         }
 
         $body = Body::json($messages);
-        $response = Request::post($this->baseUrl . 'message/send', [], $body);
+        $response = Request::post($this->baseUrl.'message/send', [], $body);
 
         if ($response->code != 200) {
             if (!empty($response->body->message)) {
@@ -119,7 +120,7 @@ class Smsgatewayme implements SMS
         }
 
         $body = Body::json($messages);
-        $response = Request::post($this->baseUrl . 'message/cancel', [], $body);
+        $response = Request::post($this->baseUrl.'message/cancel', [], $body);
 
         if ($response->code != 200) {
             if (!empty($response->body->message)) {
@@ -133,12 +134,13 @@ class Smsgatewayme implements SMS
     /**
      * Get detailed information about message.
      *
-     * @param integer $id
+     * @param int $id
+     *
      * @return array|null
      */
     public function info(int $id): ?array
     {
-        $response = Request::get($this->baseUrl . 'message/' . $id);
+        $response = Request::get($this->baseUrl.'message/'.$id);
 
         return (array) $response->body;
     }
