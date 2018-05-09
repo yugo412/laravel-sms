@@ -1,5 +1,7 @@
 # Laravel SMS
 
+![StyleCI](https://styleci.io/repos/132700891/shield)
+
 Laravel SMS is a package that has abilities to send and receive SMS via SMS gateway from various vendors such as SMSgateway.me, Zenziva.id, etc.
 
 ## Table of Contents
