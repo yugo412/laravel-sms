@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'vendor' => env('SMS_VENDOR', 'smsgateway.me'),
+    'vendor' => env('SMS_VENDOR', 'smsgatewayme'),
     
     /**
      * Send message in async mode. To enable sync mode, you must setup queue job Laravel.
