@@ -33,6 +33,13 @@ class Smsgatewayme implements SMS
      */
     private $token = null;
 
+    /**
+     * Store requested data into cache.
+     *
+     * @var boolean
+     */
+    private $cache = false;
+
     public function __construct()
     {
         $this->device = config('message.smsgatewayme.device');
@@ -45,27 +52,69 @@ class Smsgatewayme implements SMS
     }
 
     /**
+     * Set device ID manually.
+     *
+     * @param integer $id
+     * @return self
+     */
+    public function setDevice(int $id): self
+    {
+        $this->device = $id;
+
+        return $this;
+    }
+
+    /**
+     * Set token manually.
+     *
+     * @param string $token
+     * @return self
+     */
+    public function setToken(string $token): self
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+    /**
+     * Set cache as true and trigger cache data for every request.
+     *
+     * @param boolean $cache
+     * @return self
+     */
+    public function setCache(bool $cache = true): self
+    {
+        $this->cache = $cache;
+
+        return $this;
+    }
+
+    /**
      * Get device information.
      *
      * @return object|null
      */
-    public function device(?string $device = null): ?array
+    public function device(?int $id = null): ?array
     {
-        if (is_null($device)) {
-            $device = $this->device;
+        if (is_null($id)) {
+            $id = $this->device;
         }
 
-        $response = Request::get($this->baseUrl . 'device/' . $device);
+        $key = sprintf('smsgatewayme.device.%s', $id);
+        $device = Cache::remember($key, 10080, function () use ($id) {
+            $response = Request::get($this->baseUrl . 'device/' . $id);
 
-        if ($response->code == 200) {
-            Cache::forever('smsgatewayme.device.' . $device, $response->body);
-        } else {
-            if (!empty($response->body->message)) {
-                Log::error($response->body->message);
+            if ($response->code != 200) {
+                if (!empty($response->body->message)) {
+                    Log::error($response->body->message);
+                }
             }
-        }
 
-        return (array) $response->body ?? null;
+            return $response->body;
+        });
+
+        return (array) $device ?? null;
     }
 
     /**
@@ -138,8 +187,23 @@ class Smsgatewayme implements SMS
      */
     public function info(int $id): ?array
     {
-        $response = Request::get($this->baseUrl . 'message/' . $id);
+        if ($this->cache === true) {
+            $key = sprintf('smsgatewayme.info.%s', $id);
+            if (Cache::has($key)) {
+                return (array) Cache::get($key);
+            } else {
+                $response = Request::get($this->baseUrl . 'message/' . $id);
 
-        return (array) $response->body;
+                if ($response->code == 200) {
+                    Cache::put($key, $response->body, 3600 * 24);
+                } else {
+                    if (!empty($response->body->message)) {
+                        Log::error($response->body->message);
+                    }
+                }
+            }
+        }
+
+        return (array) $response->body ?? null;
     }
 }
