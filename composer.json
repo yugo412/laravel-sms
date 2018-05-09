@@ -28,5 +28,9 @@
                 "Yugo\\SMSGateway\\Providers\\SmsServiceProvider"
             ]
         }
+    },
+    "suggest": {
+        "ext-curl": "Required by Unirest PHP.",
+        "ext-xml": "Needed to parsing XML response from Zenziva."
     }
 }
