@@ -1,4 +1,4 @@
-# Laravel SMS
+# Laravel SMS Gateway
 
 ![StyleCI](https://styleci.io/repos/132700891/shield)
 
