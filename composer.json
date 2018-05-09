@@ -19,7 +19,6 @@
     ],
     "require": {
         "php": ">=7.0.0",
-        "ext-curl": "*",
         "mashape/unirest-php": "3.0.4"
     },
     "require-dev": {
@@ -36,10 +35,6 @@
                 "Yugo\\SMSGateway\\Providers\\SmsServiceProvider"
             ]
         }
-    },
-    "suggest": {
-        "ext-curl": "Required by Unirest PHP.",
-        "ext-xml": "Needed to parsing XML response from Zenziva."
     },
     "support": {
         "email": "dedy.yugo.purwanto@gmail.com"
