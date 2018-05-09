@@ -36,6 +36,32 @@ class Zenziva implements SMS
     }
 
     /**
+     * Set userkey manually via app.
+     *
+     * @param string $user
+     * @return self
+     */
+    public function setUser(string $user): self
+    {
+        $this->userkey = $user;
+        
+        return $this;
+    }
+
+    /**
+     * Set password manually via app.
+     *
+     * @param string $password
+     * @return self
+     */
+    public function setPassword(string $password): self
+    {
+        $this->passkey = $password;
+
+        return $this;
+    }    
+
+    /**
      * Send message using Zenziva API.
      *
      * @param array  $destinations
