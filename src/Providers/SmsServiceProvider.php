@@ -28,7 +28,7 @@ class SmsServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $className = studly_case(strtolower(env('SMS_VENDOR'))) ?? 'Smsgatewayme';
+        $className = studly_case(strtolower(config('message.vendor', 'smsgatewayme')));
         $classPath = '\Yugo\SMSGateway\Vendors\\' . $className;
         
         if (!class_exists($classPath)) {

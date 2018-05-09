@@ -35,8 +35,8 @@ class Smsgatewayme implements SMS
 
     public function __construct()
     {
-        $this->device = config('services.smsgatewayme.device');
-        $this->token = config('services.smsgatewayme.token');
+        $this->device = config('message.smsgatewayme.device');
+        $this->token = config('message.smsgatewayme.token');
 
         Request::defaultHeaders([
             'Accept' => 'application/json',
