@@ -105,7 +105,7 @@ Some vendors have additional methods. For example, you can check balance when us
 
 ```php
 // get registered device information
-SMS::device(?string $deviceId);
+SMS::device(?int $id); // $id is nullable
 
 // get detailed information from message
 SMS::info(int $id);
@@ -114,11 +114,27 @@ SMS::info(int $id);
 SMS::cancel(array $id);
 ```
 
+By default, SMSgateway.me package will using API configuration from ```.env``` file (such as device and token). But, you can set device ID and token programmatically via application. For example:
+
+```php
+SMS::setDevice(12345) // make sure it's integer value
+  ->setToken('secret-token')
+  ->send(['08111111111'], 'Message with custom device and token.');
+```
+
 ### Zenziva.id
 
 ```php
 // get credit balance
 SMS::credit();
+```
+
+If you want to set ```userkey``` and/or ```passkey``` manually, you can using ```setUser(string $user)``` and ```setPassword(string $password)``` method. For example:
+
+```php
+SMS::setUser('you')
+  ->setPassword('secret')
+  ->send(['08111111111'], 'Message with custom user and password.');
 ```
 
 # License
