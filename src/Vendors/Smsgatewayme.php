@@ -48,7 +48,7 @@ class Smsgatewayme implements SMS
         $this->token = config('message.smsgatewayme.token');
 
         Request::defaultHeaders([
-            'Accept' => 'application/json',
+            'Accept'        => 'application/json',
             'Authorization' => $this->token,
         ]);
     }
@@ -108,7 +108,7 @@ class Smsgatewayme implements SMS
 
         $key = sprintf('smsgatewayme.device.%s', $id);
         $device = Cache::remember($key, 3600 * 24 * 7, function () use ($id) {
-            $response = Request::get($this->baseUrl . 'device/' . $id);
+            $response = Request::get($this->baseUrl.'device/'.$id);
 
             if ($response->code != 200) {
                 if (!empty($response->body->message)) {
@@ -136,13 +136,13 @@ class Smsgatewayme implements SMS
         foreach ($destinations as $destination) {
             $messages[] = [
                 'phone_number' => $destination,
-                'message' => $text,
-                'device_id' => $this->device,
+                'message'      => $text,
+                'device_id'    => $this->device,
             ];
         }
 
         $body = Body::json($messages);
-        $response = Request::post($this->baseUrl . 'message/send', [], $body);
+        $response = Request::post($this->baseUrl.'message/send', [], $body);
 
         if ($response->code != 200) {
             if (!empty($response->body->message)) {
@@ -170,7 +170,7 @@ class Smsgatewayme implements SMS
         }
 
         $body = Body::json($messages);
-        $response = Request::post($this->baseUrl . 'message/cancel', [], $body);
+        $response = Request::post($this->baseUrl.'message/cancel', [], $body);
 
         if ($response->code != 200) {
             if (!empty($response->body->message)) {
@@ -195,7 +195,7 @@ class Smsgatewayme implements SMS
         if ($this->cache === true and Cache::has($key)) {
             return (array) Cache::get($key);
         } else {
-            $response = Request::get($this->baseUrl . 'message/' . $id);
+            $response = Request::get($this->baseUrl.'message/'.$id);
 
             if ($response->code == 200) {
                 Cache::put($key, $response->body, 3600 * 24);
@@ -212,7 +212,7 @@ class Smsgatewayme implements SMS
     /**
      * Callback/hook operations for SMSgateway.me.
      *
-     * @return Callback
+     * @return callable
      */
     public function callback(): Callback
     {

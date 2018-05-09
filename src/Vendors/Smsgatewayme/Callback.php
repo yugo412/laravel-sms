@@ -65,7 +65,7 @@ class Callback
         $this->secret = str_random(15);
 
         Request::defaultHeaders([
-            'Accept' => 'application/json',
+            'Accept'        => 'application/json',
             'Authorization' => $this->token,
         ]);
     }
@@ -74,6 +74,7 @@ class Callback
      * Set default name.
      *
      * @param string $name
+     *
      * @return self
      */
     public function name(string $name): self
@@ -87,6 +88,7 @@ class Callback
      * Set default event.
      *
      * @param string $event
+     *
      * @return self
      */
     public function event(string $event): self
@@ -104,6 +106,7 @@ class Callback
      * Set hook URL.
      *
      * @param string $url
+     *
      * @return self
      */
     public function url(string $url): self
@@ -117,6 +120,7 @@ class Callback
      * If not defined, secret key will generated automatically.
      *
      * @param string $secret
+     *
      * @return self
      */
     public function secret(string $secret = ''): self
@@ -138,16 +142,16 @@ class Callback
     public function create(): ?array
     {
         $body = Body::json([
-            'name' => $this->name,
-            'event' => $this->event,
-            'device_id' => $this->device,
+            'name'        => $this->name,
+            'event'       => $this->event,
+            'device_id'   => $this->device,
             'filter_type' => 'contains',
-            'filter' => 'stop',
-            'method' => 'http',
-            'action' => $this->url,
-            'secret' => $this->secret,
+            'filter'      => 'stop',
+            'method'      => 'http',
+            'action'      => $this->url,
+            'secret'      => $this->secret,
         ]);
-        $response = Request::post($this->baseUrl . 'callback', [], $body);
+        $response = Request::post($this->baseUrl.'callback', [], $body);
 
         return (array) $response->body;
     }
@@ -155,12 +159,13 @@ class Callback
     /**
      * Get detailed information about callback.
      *
-     * @param integer $id
+     * @param int $id
+     *
      * @return array|null
      */
     public function info(int $id): ?array
     {
-        $response = Request::get($this->baseUrl . 'callback/' . $id);
+        $response = Request::get($this->baseUrl.'callback/'.$id);
 
         return (array) $response->body ?? null;
     }
