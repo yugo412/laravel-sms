@@ -35,7 +35,7 @@ class Contact
         $this->token = $token;
 
         Request::defaultHeaders([
-            'Accept' => 'application/json',
+            'Accept'        => 'application/json',
             'Authorization' => $this->token,
         ]);
     }
@@ -44,18 +44,19 @@ class Contact
      * Store new contact to SMSGateway.me.
      *
      * @param string $name
-     * @param array $numbers
+     * @param array  $numbers
+     *
      * @return array|null
      */
     public function create(string $name, array $numbers): ?array
     {
         $body = Body::json([
             [
-                'name' => $name,
+                'name'          => $name,
                 'phone_numbers' => $numbers,
             ],
         ]);
-        $response = Request::post($this->baseUrl . 'contact', [], $body);
+        $response = Request::post($this->baseUrl.'contact', [], $body);
 
         if ($response->code != 200) {
             if (!empty($response->body->message)) {
@@ -69,12 +70,13 @@ class Contact
     /**
      * Get detailed stored contact.
      *
-     * @param integer $id
+     * @param int $id
+     *
      * @return array|null
      */
     public function info(int $id): ?array
     {
-        $response = Request::get($this->baseUrl . 'contact/' . $id);
+        $response = Request::get($this->baseUrl.'contact/'.$id);
 
         if ($response->code != 200) {
             if (!empty($response->body->message)) {
@@ -88,13 +90,14 @@ class Contact
     /**
      * Add number to existing contact.
      *
-     * @param integer $id
+     * @param int    $id
      * @param string $number
+     *
      * @return array|null
      */
     public function addNumber(int $id, string $number): ?array
     {
-        $response = Request::put($this->baseUrl . sprintf('contact/%d/phone-number/%s', $id, $number));
+        $response = Request::put($this->baseUrl.sprintf('contact/%d/phone-number/%s', $id, $number));
 
         if ($response->code != 200) {
             if (!empty($response->body->message)) {
@@ -108,13 +111,14 @@ class Contact
     /**
      * Remove number from existing contact.
      *
-     * @param integer $id
+     * @param int    $id
      * @param string $number
+     *
      * @return array|null
      */
     public function removeNumber(int $id, string $number): ?array
     {
-        $response = Request::delete($this->baseUrl . sprintf('contact/%d/phone-number/%s', $id, $number));
+        $response = Request::delete($this->baseUrl.sprintf('contact/%d/phone-number/%s', $id, $number));
 
         if ($response->code != 200) {
             if (!empty($response->body->message)) {
@@ -128,10 +132,10 @@ class Contact
     public function update(int $id, string $name, array $numbers = []): ?array
     {
         $body = Body::json([
-            'name' => $name,
+            'name'          => $name,
             'phone_numbers' => $numbers,
         ]);
-        $response = Request::put($this->baseUrl . 'contact/' . $id, [], $body);
+        $response = Request::put($this->baseUrl.'contact/'.$id, [], $body);
 
         if ($response->code != 200) {
             if (!empty($response->body->message)) {
