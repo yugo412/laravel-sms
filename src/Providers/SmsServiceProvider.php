@@ -17,8 +17,8 @@ class SmsServiceProvider extends ServiceProvider
         $this->publishes([
             realpath(__DIR__.'/../config/message.php') => config_path('message.php'),
         ]);
-        
-        $this->loadMigrationsFrom(realpath(__DIR__ . '/../database/migrations/'));
+
+        $this->loadMigrationsFrom(realpath(__DIR__.'/../database/migrations/'));
     }
 
     /**
@@ -29,8 +29,8 @@ class SmsServiceProvider extends ServiceProvider
     public function register()
     {
         $className = studly_case(strtolower(config('message.vendor', 'smsgatewayme')));
-        $classPath = '\Yugo\SMSGateway\Vendors\\' . $className;
-        
+        $classPath = '\Yugo\SMSGateway\Vendors\\'.$className;
+
         if (!class_exists($classPath)) {
             abort(500, sprintf(
                 'SMS vendor %s is not available.',
