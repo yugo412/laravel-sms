@@ -3,13 +3,10 @@
 namespace Yugo\SMSGateway\Vendors;
 
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Yugo\SMSGateway\Interfaces\SMS;
-use Yugo\SMSGateway\Models\Contact;
-use Yugo\SMSGateway\Models\Message;
 use Unirest\Request;
 use Unirest\Request\Body;
+use Yugo\SMSGateway\Interfaces\SMS;
 
 class Smsgatewayme implements SMS
 {
@@ -96,36 +93,13 @@ class Smsgatewayme implements SMS
         $body = Body::json($messages);
         $response = Request::post($this->baseUrl . 'message/send', [], $body);
 
-        $messages = [];
-        if ($response->code == 200) {
-            foreach ($response->body as $body) {
-                DB::transaction(function () use (&$messages, $body, $userId) {
-                    $contact = Contact::firstOrCreate([
-                        'number' => $body->phone_number,
-                    ]);
-
-                    $messages[] = Message::create([
-                        'message_id' => $body->id,
-                        'contact_id' => $contact->id ?? null,
-                        'user_id' => $userId,
-                        'source' => '',
-                        'destination' => $body->phone_number,
-                        'text' => $body->message,
-                        'status' => $body->status,
-                        'metadata' => [
-                            'provider' => env('SMS_VENDOR'),
-                            'device_id' => $body->device_id,
-                        ],
-                    ]);
-                });
-            }
-        } else {
+        if ($response->code != 200) {
             if (!empty($response->body->message)) {
                 Log::error($response->body->message);
             }
         }
 
-        return $messages;
+        return (array) $response->body ?? null;
     }
 
     /**
@@ -147,15 +121,7 @@ class Smsgatewayme implements SMS
         $body = Body::json($messages);
         $response = Request::post($this->baseUrl . 'message/cancel', [], $body);
 
-        if ($response->code == 200) {
-            foreach ($response->body as $body) {
-                $message = Message::whereMessageId($body->id)->first();
-                if (!empty($message)) {
-                    $message->fill(['status' => 'canceled']);
-                    $message->save();
-                }
-            }
-        } else {
+        if ($response->code != 200) {
             if (!empty($response->body->message)) {
                 Log::error($response->body->message);
             }
