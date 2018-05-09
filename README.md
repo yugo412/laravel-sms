@@ -2,11 +2,29 @@
 
 Laravel SMS is a package that has abilities to send and receive SMS via SMS gateway from various vendors such as SMSgateway.me, Zenziva.id, etc.
 
-## Available Vendors
-- [SMSGateway.me](http://smsgateway.me/)
-- [Zenziva.id](http://www.zenziva.id)
+## Table of Contents
 
-## Installations
+  - [Requirements](https://github.com/arvernester/laravel-sms#requirements)
+  - [Available Vendors](https://github.com/arvernester/laravel-sms#available-vendors)
+  - [Installation Instructions](https://github.com/arvernester/laravel-sms#installations)
+    - [SMSGateway.me](https://github.com/arvernester/laravel-sms#smsgatewayme)
+    - [Zenziva.id](https://github.com/arvernester/laravel-sms#zenzivaid)
+  - [Usage](https://github.com/arvernester/laravel-sms#usage)
+  - [Additional Methods](https://github.com/arvernester/laravel-sms#additional-methods)
+    - [SMSGateway.me](https://github.com/arvernester/laravel-sms#smsgatewayme-1)
+    - [Zenziva.id](https://github.com/arvernester/laravel-sms#zenzivaid-1)
+  - [License](https://github.com/arvernester/laravel-sms#license)
+  
+## Requirements
+ - PHP 7.0 or above.
+ - cURL extension for PHP.
+ - Laravel version 5.3 or above.
+
+## Available Vendors
+- [SMSGateway.me](http://smsgateway.me/) (```smsgatewayme```)
+- [Zenziva.id](http://www.zenziva.id) (```zenziva```)
+
+## Installation Instructions
 
 Install package via Composer by running the command:
 
@@ -14,7 +32,7 @@ Install package via Composer by running the command:
 composer require yugo/smsgateway -vvv
 ```
 
-Publish command using the command:
+Publish package assets using command below:
 
 ```
 php artisan vendor:publish
@@ -22,7 +40,20 @@ php artisan vendor:publish
 
 Select package from ```yugo/smsgateway``` to automatically copy a config file to your config application directory.
 
-Open your ```.env``` file and add a new key named ```SMS_VENDOR``` (see available vendors).
+[![vendor-publish.gif](https://s9.postimg.cc/6bmdismi7/vendor-publish.gif)](https://postimg.cc/image/ki24e0xd7/)
+
+**Note:** If you are using Laravel version 5.4 or below, you must setup provide manually by adding ```Yugo\SMSGateway\Provider\SmsServiceProvider::class``` to your ```config/app.php``` file.
+
+```php
+App\Providers\AppServiceProvider::class,
+App\Providers\AuthServiceProvider::class,
+// App\Providers\BroadcastServiceProvider::class,
+App\Providers\EventServiceProvider::class,
+App\Providers\RouteServiceProvider::class,
+Yugo\SMSGateway\Providers\SmsServiceProvider::class,
+```       
+
+Open your ```.env``` file and add a new key named ```SMS_VENDOR``` for vendor alias (see [available vendors](https://github.com/arvernester/laravel-sms#available-vendors)).
 
 ```
 SMS_VENDOR=smsgatewayme
@@ -58,7 +89,7 @@ use Facades\Yugo\SMSGateway\Interfaces\SMS;
 
 Now, you can use class SMS inside your PHP file. Every vendor has ```send(array $destinations, string $message)``` method.
 
-Send example:
+Quick example:
 
 ```php
 SMS::send(['62891111111'], 'Hello, how are you?');
@@ -71,7 +102,7 @@ Some vendors have additional methods. For example, you can check balance when us
 ### SMSGateway.me
 
 ```php
-// get registred device information
+// get registered device information
 SMS::device(?string $deviceId);
 
 // get detailed information from message
@@ -90,4 +121,4 @@ SMS::credit();
 
 # License
 
-MIT
+MIT.
