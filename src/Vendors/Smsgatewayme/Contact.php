@@ -65,9 +65,9 @@ class Contact
         }
 
         return [
-            'code' => $response->code,
+            'code'    => $response->code,
             'message' => ($response->code == 200) ? 'OK' : $response->body->message ?? '',
-            'data' => $response->body,
+            'data'    => $response->body,
         ];
     }
 
@@ -89,9 +89,9 @@ class Contact
         }
 
         return [
-            'code' => $response->code,
+            'code'    => $response->code,
             'message' => ($response->code == 200) ? 'OK' : $response->body->message ?? '',
-            'data' => $response->body,
+            'data'    => $response->body,
         ];
     }
 
@@ -114,9 +114,9 @@ class Contact
         }
 
         return [
-            'code' => $response->code,
+            'code'    => $response->code,
             'message' => ($response->code == 200) ? 'OK' : $response->body->message ?? '',
-            'data' => $response->body,
+            'data'    => $response->body,
         ];
     }
 
@@ -139,9 +139,9 @@ class Contact
         }
 
         return [
-            'code' => $response->code,
+            'code'    => $response->code,
             'message' => ($response->code == 200) ? 'OK' : $response->body->message ?? '',
-            'data' => $response->body,
+            'data'    => $response->body,
         ];
     }
 
@@ -160,9 +160,9 @@ class Contact
         }
 
         return [
-            'code' => $response->code,
+            'code'    => $response->code,
             'message' => ($response->code == 200) ? 'OK' : $response->body->message ?? '',
-            'data' => $response->body,
+            'data'    => $response->body,
         ];
     }
 }
