@@ -48,7 +48,7 @@ class Smsgatewayme implements SMS
         $this->token = config('message.smsgatewayme.token');
 
         Request::defaultHeaders([
-            'Accept'        => 'application/json',
+            'Accept' => 'application/json',
             'Authorization' => $this->token,
         ]);
     }
@@ -107,8 +107,8 @@ class Smsgatewayme implements SMS
         }
 
         $key = sprintf('smsgatewayme.device.%s', $id);
-        $device = Cache::remember($key, 3600 * 24 * 7, function () use ($id) {
-            $response = Request::get($this->baseUrl.'device/'.$id);
+        $device = Cache::remember($key, 3600 * 24 * 7, function () use (&$response, $id) {
+            $response = Request::get($this->baseUrl . 'device/' . $id);
 
             if ($response->code != 200) {
                 if (!empty($response->body->message)) {
@@ -119,7 +119,11 @@ class Smsgatewayme implements SMS
             return $response->body;
         });
 
-        return (array) $device ?? null;
+        return [
+            'code' => $response->code ?? 200,
+            'message' => 'OK',
+            'data' => $device,
+        ];
     }
 
     /**
@@ -136,21 +140,31 @@ class Smsgatewayme implements SMS
         foreach ($destinations as $destination) {
             $messages[] = [
                 'phone_number' => $destination,
-                'message'      => $text,
-                'device_id'    => $this->device,
+                'message' => $text,
+                'device_id' => $this->device,
             ];
         }
 
         $body = Body::json($messages);
-        $response = Request::post($this->baseUrl.'message/send', [], $body);
+        $response = Request::post($this->baseUrl . 'message/send', [], $body);
 
-        if ($response->code != 200) {
+        if ($response->code == 200) {
+            return [
+                'code' => $response->code,
+                'message' => 'OK',
+                'data' => $response->body,
+            ];
+        } else {
             if (!empty($response->body->message)) {
                 Log::error($response->body->message);
             }
-        }
 
-        return (array) $response->body ?? null;
+            return [
+                'code' => $response->code,
+                'message' => $response->body->message ?? '',
+                'data' => $response->body,
+            ];
+        }
     }
 
     /**
@@ -170,15 +184,25 @@ class Smsgatewayme implements SMS
         }
 
         $body = Body::json($messages);
-        $response = Request::post($this->baseUrl.'message/cancel', [], $body);
+        $response = Request::post($this->baseUrl . 'message/cancel', [], $body);
 
-        if ($response->code != 200) {
+        if ($response->code == 200) {
+            return [
+                'code' => $response->code,
+                'message' => 'OK',
+                'data' => $response->body,
+            ];
+        } else {
             if (!empty($response->body->message)) {
                 Log::error($response->body->message);
             }
-        }
 
-        return (array) $response->body;
+            return [
+                'code' => $response->code,
+                'message' => $response->body->message ?? '',
+                'data' => $response->body,
+            ];
+        }
     }
 
     /**
@@ -193,9 +217,13 @@ class Smsgatewayme implements SMS
         $key = sprintf('smsgatewayme.info.%s', $id);
 
         if ($this->cache === true and Cache::has($key)) {
-            return (array) Cache::get($key);
+            $message = [
+                'code' => 200,
+                'message' => 'OK',
+                'data' => Cache::get($key),
+            ];
         } else {
-            $response = Request::get($this->baseUrl.'message/'.$id);
+            $response = Request::get($this->baseUrl . 'message/' . $id);
 
             if ($response->code == 200) {
                 Cache::put($key, $response->body, 3600 * 24);
@@ -204,9 +232,15 @@ class Smsgatewayme implements SMS
                     Log::error($response->body->message);
                 }
             }
+
+            $message = [
+                'code' => $response->code,
+                'message' => ($response->code == 200) ? 'OK' : $response->body->message ?? '',
+                'data' => $response->body,
+            ];
         }
 
-        return (array) $response->body ?? null;
+        return $message;
     }
 
     /**

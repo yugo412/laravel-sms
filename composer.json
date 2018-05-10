@@ -19,6 +19,7 @@
     ],
     "require": {
         "php": ">=7.0.0",
+        "laravel/framework": ">=5.4",
         "mashape/unirest-php": "3.0.4"
     },
     "require-dev": {

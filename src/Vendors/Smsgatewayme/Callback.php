@@ -2,6 +2,7 @@
 
 namespace Yugo\SMSGateway\Vendors\Smsgatewayme;
 
+use Illuminate\Support\Facades\Log;
 use Unirest\Request;
 use Unirest\Request\Body;
 
@@ -65,7 +66,7 @@ class Callback
         $this->secret = str_random(15);
 
         Request::defaultHeaders([
-            'Accept'        => 'application/json',
+            'Accept' => 'application/json',
             'Authorization' => $this->token,
         ]);
     }
@@ -142,18 +143,28 @@ class Callback
     public function create(): ?array
     {
         $body = Body::json([
-            'name'        => $this->name,
-            'event'       => $this->event,
-            'device_id'   => $this->device,
+            'name' => $this->name,
+            'event' => $this->event,
+            'device_id' => $this->device,
             'filter_type' => 'contains',
-            'filter'      => 'stop',
-            'method'      => 'http',
-            'action'      => $this->url,
-            'secret'      => $this->secret,
+            'filter' => 'stop',
+            'method' => 'http',
+            'action' => $this->url,
+            'secret' => $this->secret,
         ]);
-        $response = Request::post($this->baseUrl.'callback', [], $body);
+        $response = Request::post($this->baseUrl . 'callback', [], $body);
 
-        return (array) $response->body;
+        if ($response->code != 200) {
+            if (!empty($response->body->message)) {
+                Log::error($response->body->message);
+            }
+        }
+
+        return [
+            'code' => $response->code,
+            'message' => ($response->code == 200) ? 'OK' : $response->body->message ?? '',
+            'data' => $response->body,
+        ];
     }
 
     /**
@@ -165,8 +176,18 @@ class Callback
      */
     public function info(int $id): ?array
     {
-        $response = Request::get($this->baseUrl.'callback/'.$id);
+        $response = Request::get($this->baseUrl . 'callback/' . $id);
 
-        return (array) $response->body ?? null;
+        if ($response->code != 200) {
+            if (!empty($response->body->message)) {
+                Log::error($response->body->message);
+            }
+        }
+
+        return [
+            'code' => $response->code,
+            'message' => ($response->code == 200) ? 'OK' : $response->body->message ?? '',
+            'data' => $response->body,
+        ];
     }
 }

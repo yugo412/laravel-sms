@@ -64,7 +64,11 @@ class Contact
             }
         }
 
-        return (array) $response->body ?? null;
+        return [
+            'code' => $response->code,
+            'message' => ($response->code == 200) ? 'OK' : $response->body->message ?? '',
+            'data' => $response->body,
+        ];
     }
 
     /**
@@ -84,7 +88,11 @@ class Contact
             }
         }
 
-        return (array) $response->body ?? null;
+        return [
+            'code' => $response->code,
+            'message' => ($response->code == 200) ? 'OK' : $response->body->message ?? '',
+            'data' => $response->body,
+        ];
     }
 
     /**
@@ -105,7 +113,11 @@ class Contact
             }
         }
 
-        return (array) $response->body ?? null;
+        return [
+            'code' => $response->code,
+            'message' => ($response->code == 200) ? 'OK' : $response->body->message ?? '',
+            'data' => $response->body,
+        ];
     }
 
     /**
@@ -126,7 +138,11 @@ class Contact
             }
         }
 
-        return (array) $response->body ?? null;
+        return [
+            'code' => $response->code,
+            'message' => ($response->code == 200) ? 'OK' : $response->body->message ?? '',
+            'data' => $response->body,
+        ];
     }
 
     public function update(int $id, string $name, array $numbers = []): ?array
@@ -143,6 +159,10 @@ class Contact
             }
         }
 
-        return (array) $response->body ?? null;
+        return [
+            'code' => $response->code,
+            'message' => ($response->code == 200) ? 'OK' : $response->body->message ?? '',
+            'data' => $response->body,
+        ];
     }
 }
