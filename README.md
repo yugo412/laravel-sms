@@ -55,17 +55,19 @@ App\Providers\RouteServiceProvider::class,
 Yugo\SMSGateway\Providers\SmsServiceProvider::class,
 ```       
 
-Open your ```.env``` file and add a new key named ```SMS_VENDOR``` for vendor alias (see [available vendors](https://github.com/arvernester/laravel-sms#available-vendors)).
+Then, publish package vendor using command below.
 
 ```
-SMS_VENDOR=smsgatewayme
+php artisan vendor:publish --provider="Yugo\SMSGateway\Providers\SmsServiceProvider"
 ```
+
 
 ### SMSGateway.me
 
 To enable and using SMSgateway.me vendor, you must set new configurations based on SMSgateway.me setting. Add two config values like as below.
 
 ```
+SMS_VENDOR="smsgatewayme"
 SMSGATEWAYME_DEVICE=
 SMSGATEWAYME_TOKEN=
 ```
@@ -75,6 +77,7 @@ SMSGATEWAYME_TOKEN=
 Login to your Zenziva.id dashboard account to get ```userkey``` and ```passkey``` value. Add ```userkey``` and ```passkey``` to ```.env``` file using these configurations.
 
 ```
+SMS_VENDOR="zenziva"
 ZENZIVA_USERKEY=userkey
 ZENZIVA_PASSKEY=passkey
 ```
