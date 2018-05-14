@@ -94,7 +94,12 @@ class Callback
      */
     public function event(string $event): self
     {
-        if (!in_array($event, ['received', 'sent', 'failed'])) {
+        $events = [
+            'MESSAGE_RECEIVED',
+            'MESSAGE_SENT',
+            'MESSAGE_FAILED',
+        ];
+        if (!in_array($event, $events)) {
             abort(500, sprintf('Event %s not available.', $event));
         }
 
@@ -146,8 +151,8 @@ class Callback
             'name'        => $this->name,
             'event'       => $this->event,
             'device_id'   => $this->device,
-            'filter_type' => 'contains',
-            'filter'      => 'stop',
+            'filter_type' => '',
+            'filter'      => '',
             'method'      => 'http',
             'action'      => $this->url,
             'secret'      => $this->secret,
@@ -177,6 +182,33 @@ class Callback
     public function info(int $id): ?array
     {
         $response = Request::get($this->baseUrl.'callback/'.$id);
+
+        if ($response->code != 200) {
+            if (!empty($response->body->message)) {
+                Log::error($response->body->message);
+            }
+        }
+
+        return [
+            'code'    => $response->code,
+            'message' => ($response->code == 200) ? 'OK' : $response->body->message ?? '',
+            'data'    => $response->body,
+        ];
+    }
+
+    public function update(int $id): ?array
+    {
+        $body = Body::json([
+            'name'        => $this->name,
+            'event'       => $this->event,
+            'device_id'   => $this->device,
+            'filter_type' => '',
+            'filter'      => '',
+            'method'      => 'http',
+            'action'      => $this->url,
+            'secret'      => $this->secret,
+        ]);
+        $response = Request::put($this->baseUrl.'callback/'.$id, [], $body);
 
         if ($response->code != 200) {
             if (!empty($response->body->message)) {
