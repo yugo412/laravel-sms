@@ -74,7 +74,7 @@ class Zenziva implements SMS
     public function send(array $destinations, string $message): ?array
     {
         $this->checkConfig();
-        
+
         if (!empty($destinations)) {
             $destination = $destinations[0];
         }
@@ -82,11 +82,11 @@ class Zenziva implements SMS
         $query = http_build_query([
             'userkey' => $this->userkey,
             'passkey' => $this->passkey,
-            'nohp' => $destination,
-            'pesan' => $message,
+            'nohp'    => $destination,
+            'pesan'   => $message,
         ]);
 
-        $response = Request::get($this->baseUrl . '/smsapi.php?' . $query);
+        $response = Request::get($this->baseUrl.'/smsapi.php?'.$query);
 
         $xml = simplexml_load_string($response->body);
         $body = json_decode(json_encode($xml), true);
@@ -96,9 +96,9 @@ class Zenziva implements SMS
         }
 
         return [
-            'code' => $response->code,
+            'code'    => $response->code,
             'message' => ($response->code == 200) ? 'OK' : $body['message']['text'] ?? '',
-            'data' => $body,
+            'data'    => $body,
         ];
     }
 
@@ -116,15 +116,15 @@ class Zenziva implements SMS
             'passkey' => $this->passkey,
         ]);
 
-        $response = Request::get($this->baseUrl . '/smsapibalance.php?' . $query);
+        $response = Request::get($this->baseUrl.'/smsapibalance.php?'.$query);
 
         $xml = simplexml_load_string($response->body);
         $body = json_decode(json_encode($xml), true);
 
         return [
-            'code' => $response->code,
+            'code'    => $response->code,
             'message' => ($response->code == 200) ? 'OK' : $body['message']['text'] ?? '',
-            'data' => $body,
+            'data'    => $body,
         ];
     }
 
