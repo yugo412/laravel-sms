@@ -136,6 +136,8 @@ class Smsgatewayme implements SMS
      */
     public function send(array $destinations, string $text): ?array
     {
+        $this->checkConfig();
+        
         $messages = [];
         foreach ($destinations as $destination) {
             $messages[] = [
@@ -174,6 +176,8 @@ class Smsgatewayme implements SMS
      */
     public function cancel(array $identifiers = []): ?array
     {
+        $this->checkConfig();
+
         if (empty($identifiers)) {
             return null;
         }
@@ -214,6 +218,8 @@ class Smsgatewayme implements SMS
      */
     public function info(int $id): ?array
     {
+        $this->checkConfig();
+
         $key = sprintf('smsgatewayme.info.%s', $id);
 
         if ($this->cache === true and Cache::has($key)) {
@@ -261,5 +267,21 @@ class Smsgatewayme implements SMS
     public function contact(): Contact
     {
         return new Contact($this->device, $this->token);
+    }
+
+    /**
+     * Check default config for easy debuggin.
+     *
+     * @return void
+     */
+    private function checkConfig(): void
+    {        
+        if (empty($this->device)) {
+            Log::warning('Config "message.smsgatewayme.device" is not defined.');
+        }
+
+        if (empty($this->token)) {
+            Log::warning('Config "message.smsgatewayme.token" is not defined.');
+        }
     }
 }

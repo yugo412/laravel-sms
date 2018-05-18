@@ -73,6 +73,8 @@ class Zenziva implements SMS
      */
     public function send(array $destinations, string $message): ?array
     {
+        $this->checkConfig();
+        
         if (!empty($destinations)) {
             $destination = $destinations[0];
         }
@@ -80,23 +82,23 @@ class Zenziva implements SMS
         $query = http_build_query([
             'userkey' => $this->userkey,
             'passkey' => $this->passkey,
-            'nohp'    => $destination,
-            'pesan'   => $message,
+            'nohp' => $destination,
+            'pesan' => $message,
         ]);
 
-        $response = Request::get($this->baseUrl.'/smsapi.php?'.$query);
+        $response = Request::get($this->baseUrl . '/smsapi.php?' . $query);
 
         $xml = simplexml_load_string($response->body);
         $body = json_decode(json_encode($xml), true);
 
         if (!empty($body['message']) and $body['message']['status'] != 0) {
-            Log::error($body['message']['text']);
+            Log::error(sprintf('Zenziva: %s.', $body['message']['text']));
         }
 
         return [
-            'code'    => $response->code,
+            'code' => $response->code,
             'message' => ($response->code == 200) ? 'OK' : $body['message']['text'] ?? '',
-            'data'    => $body,
+            'data' => $body,
         ];
     }
 
@@ -107,20 +109,38 @@ class Zenziva implements SMS
      */
     public function credit(): ?array
     {
+        $this->checkConfig();
+
         $query = http_build_query([
             'userkey' => $this->userkey,
             'passkey' => $this->passkey,
         ]);
 
-        $response = Request::get($this->baseUrl.'/smsapibalance.php?'.$query);
+        $response = Request::get($this->baseUrl . '/smsapibalance.php?' . $query);
 
         $xml = simplexml_load_string($response->body);
         $body = json_decode(json_encode($xml), true);
 
         return [
-            'code'    => $response->code,
+            'code' => $response->code,
             'message' => ($response->code == 200) ? 'OK' : $body['message']['text'] ?? '',
-            'data'    => $body,
+            'data' => $body,
         ];
+    }
+
+    /**
+     * Check config and add to log for easy debugging.
+     *
+     * @return void
+     */
+    private function checkConfig(): void
+    {
+        if (empty($this->userkey)) {
+            Log::warning('Config "message.zenziva.userkey" is not defined.');
+        }
+
+        if (empty($this->passkey)) {
+            Log::warning('Config "message.zenziva.passkey" is not defined.');
+        }
     }
 }
