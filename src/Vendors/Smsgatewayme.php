@@ -137,7 +137,7 @@ class Smsgatewayme implements SMS
     public function send(array $destinations, string $text): ?array
     {
         $this->checkConfig();
-        
+
         $messages = [];
         foreach ($destinations as $destination) {
             $messages[] = [
@@ -275,7 +275,7 @@ class Smsgatewayme implements SMS
      * @return void
      */
     private function checkConfig(): void
-    {        
+    {
         if (empty($this->device)) {
             Log::warning('Config "message.smsgatewayme.device" is not defined.');
         }
